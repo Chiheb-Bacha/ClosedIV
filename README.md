@@ -1,6 +1,8 @@
 # ClosedIV
 
 This repository contains the source code for ClosedIV.asi, an open source alternative to OpenIV.asi for GTA5
+It simply adds support for versions >3351.
+No future additions are planned.
 
 ## Benefits over OpenIV.asi
 
@@ -24,10 +26,3 @@ CMake 3.17.x and Visual Studio is needed to build the project. You can run relea
 ## Info
 
 Check the [wiki](https://github.com/martonp96/ClosedIV/wiki) for more information
-
-## Goals
-- [x] Initial release
-- [x] Adding log files
-- [ ] Adding logs to debug mods created by people, so they know what is wrong with their broken stuff
-- [ ] Adding support to replace files without copying the entire RPF
-- [ ] Support RPFs as directories
