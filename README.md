@@ -1,8 +1,8 @@
 # ClosedIV
 
-This repository contains the source code for ClosedIV.asi, an open source alternative to OpenIV.asi for GTA5
-It simply adds support for versions >3351.
-No future additions are planned.
+- This repository contains the source code for ClosedIV.asi, an open source alternative to OpenIV.asi for GTA5.
+- It simply adds support for versions >3351.
+- No future additions or enhancements are planned.
 
 ## Benefits over OpenIV.asi
 
