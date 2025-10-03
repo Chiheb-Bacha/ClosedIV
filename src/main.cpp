@@ -9,8 +9,12 @@ void HookGetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
 		bInited = true;
 		memory::init();
 
-		//don't hide the console
-		memory::scan("FF 15 ? ? ? ? E8 ? ? ? ? 65 48 8B 0C 25 ? ? ? ? 8B 05 ? ? ? ? 48 8B 04 C1 BA ? ? ? ? 83 24 02 00 E8").nop(6);
+		// Don't hide the console
+		auto addr = memory::scan("FF 15 ? ? ? ? E8 ? ? ? ? 65 48 8B 0C 25 ? ? ? ? 8B 05 ? ? ? ? 48 8B 04 C1 BA ? ? ? ? 83 24 02 00 E8", true); // This is kept for backwards compatibility, as I don't know when this pattern stopped working.
+		if (addr.address == 0) {
+			addr = memory::scan("ff 15 ? ? ? ? 65 48 8b 0c 25 ? ? ? ? 8b 05 ? ? ? ? ba");
+		}
+		addr.nop(6);
 
 		memory::InitFuncs::run();
 
@@ -21,12 +25,12 @@ void HookGetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 {
-    if(dwReason == DLL_PROCESS_ATTACH)
+	if (dwReason == DLL_PROCESS_ATTACH)
 	{
 		DisableThreadLibraryCalls(hModule);
 
 		config::load();
-		
+
 		logger::init();
 
 		if (config::get_config<bool>("console"))
@@ -43,6 +47,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 		if (!memory::HookIAT("kernel32.dll", "GetSystemTimeAsFileTime", (PVOID)HookGetSystemTimeAsFileTime, (PVOID*)&origGetSystemTimeAsFileTime)) {
 			logger::write("info", "Hooking failed error (%ld)", GetLastError());
 		}
-    }
-    return TRUE;
+	}
+	return TRUE;
 }

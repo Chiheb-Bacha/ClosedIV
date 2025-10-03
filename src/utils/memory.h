@@ -34,7 +34,7 @@ public:
 		}
 	};
 
-    inline static uintptr_t& base()
+	inline static uintptr_t& base()
 	{
 		static uintptr_t _base;
 		return _base;
@@ -126,7 +126,7 @@ public:
 	{
 		memory jmpMem = get_virtual_mem(12);
 
-		if(ret)
+		if (ret)
 			jmpMem.make_jmp_ret((uintptr_t)func);
 		else
 			jmpMem.make_jmp((uintptr_t)func);
@@ -150,7 +150,7 @@ public:
 	template<class T>
 	void hook(T* target, T** orig = nullptr)
 	{
-		auto status = MH_CreateHook((void*)address, (void*)target, (void**)orig);		
+		auto status = MH_CreateHook((void*)address, (void*)target, (void**)orig);
 		if (status != MH_OK)
 			logger::write("info", "MH_CreateHook failed %d", (int)status);
 
@@ -171,7 +171,7 @@ public:
 		{
 			new InitFuncs([this] {
 				this->run();
-			});
+				});
 		}
 
 		void run()
@@ -187,7 +187,7 @@ public:
 
 	static BOOL HookIAT(const char* szModuleName, const char* szFuncName, PVOID pNewFunc, PVOID* pOldFunc)
 	{//https://guidedhacking.com/threads/how-to-hook-import-address-table-iat-hooking.13555/
-		#define PtrFromRva( base, rva ) ( ( ( PBYTE ) base ) + rva )
+#define PtrFromRva( base, rva ) ( ( ( PBYTE ) base ) + rva )
 
 		PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)GetModuleHandle(NULL);
 		PIMAGE_NT_HEADERS pNtHeader = (PIMAGE_NT_HEADERS)PtrFromRva(pDosHeader, pDosHeader->e_lfanew);
@@ -238,7 +238,7 @@ public:
 		return FALSE;
 	}
 
-	static memory scan(const char* signature)
+	static memory scan(const char* signature, bool ignoreFail = false)
 	{
 		static auto pattern_to_byte = [](const char* pattern) {
 			auto bytes = std::vector<int>{};
@@ -257,7 +257,7 @@ public:
 				}
 			}
 			return bytes;
-		};
+			};
 
 		auto moduleBase = base();
 
@@ -287,8 +287,9 @@ public:
 				return memory((uintptr_t)&scanBytes[i], false);
 			}
 		}
-
-		logger::write("info", "!! Pattern %s not found!", signature);
+		if (!ignoreFail) {
+			logger::write("info", "!! Pattern %s not found!", signature);
+		}
 		return memory(0, false);
 	}
 
