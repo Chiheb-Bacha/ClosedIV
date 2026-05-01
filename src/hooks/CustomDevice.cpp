@@ -66,7 +66,8 @@ void InitialMountHook()
 	dlcDevice->Mount("dlcpacks:/");
 }
 
-static memory::func<rage::fiDevice*, const char*, bool> GetDeviceHook("48 89 5C 24 ? 88 54 24 10 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 20 48 8D 15 ? ? ? ? 41 B8");
+static memory::func<rage::fiDevice*, const char*, bool> GetDeviceHook(IsEnhanced() ? "41 57 41 56 41 55 41 54 56 57 55 53 48 81 ec ? ? ? ? 89 d6 49 89 ce" :
+	"48 89 5C 24 ? 88 54 24 10 55 56 57 41 54 41 55 41 56 41 57 48 83 EC 20 48 8D 15 ? ? ? ? 41 B8");
 
 char (*OpenArchiveOrig)(rage::fiPackfile* a1, const char* path, char smth, int32_t type, __int64 a5);
 char OpenArchiveHook(rage::fiPackfile* a1, const char* path, char smth, int32_t type, __int64 a5)
@@ -81,14 +82,29 @@ char OpenArchiveHook(rage::fiPackfile* a1, const char* path, char smth, int32_t 
 		}
 		logger::write("device", "Opening archive %s %d %d", path, smth, type);
 	}
+	else {
+		logger::write("device", "Opening vanilla archive %s %d %d", path, smth, type);
+	}
 	return OpenArchiveOrig(a1, path, smth, type, a5);
 }
 
 static memory::InitFuncs CustomDevice([] {
-	auto mem = memory::scan("0F B7 05 ? ? ? ? 48 03 C3 44 88 34 38").add(21);
-	InitialMountOrig = mem.add(1).rip().as<decltype(InitialMountOrig)>();
-	mem.set_call(InitialMountHook);
 
-	memory::scan("48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 98 48 81 EC ? ? ? ? 41 8B F9 4C 8B E2 48 8B D9 4C 8B CA 48 8D 05")
-		.hook(OpenArchiveHook, &OpenArchiveOrig);
+	if (IsEnhanced()) {
+		auto mem = memory::scan("e8 ? ? ? ? 48 8d 05 ? ? ? ? 66 c7 44 58 02 00 00 66 89 3d").add(26);
+		InitialMountOrig = mem.add(1).rip().as<decltype(InitialMountOrig)>();
+		mem.set_call(InitialMountHook);
+
+		memory::scan("41 57 41 56 41 55 41 54 56 57 55 53 48 81 ec ? ? ? ? 45 89 cd 45 89 c6 49 89 d7 48 89 ce 8b 05")
+			.hook(OpenArchiveHook, &OpenArchiveOrig);
+	}
+	else {
+
+		auto mem = memory::scan("0F B7 05 ? ? ? ? 48 03 C3 44 88 34 38").add(21);
+		InitialMountOrig = mem.add(1).rip().as<decltype(InitialMountOrig)>();
+		mem.set_call(InitialMountHook);
+
+		memory::scan("48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D 68 98 48 81 EC ? ? ? ? 41 8B F9 4C 8B E2 48 8B D9 4C 8B CA 48 8D 05")
+			.hook(OpenArchiveHook, &OpenArchiveOrig);
+	}
 });

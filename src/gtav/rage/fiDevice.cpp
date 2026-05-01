@@ -3,7 +3,8 @@
 bool rage::fiDevice::Mount(const char* mountPoint)
 {
 	logger::write("device", "[%s] %s", __FUNCTION__, mountPoint);
-	static auto func = memory::scan("48 89 5C 24 ? 57 48 81 EC ? ? ? ? 44 8A 81 ? ? ? ? 48 8B DA 48 8B F9 48 8B D1 48 8B CB E8 ? ? ? ? 84 C0 74 64 48 8D 4C 24 ? 33 D2 41 B8")
+	static auto func = memory::scan(IsEnhanced() ? "56 57 53 48 81 ec ? ? ? ? 48 83 79 ? ? 0f 84 ? ? ? ? 48 89 d7" :
+		"48 89 5C 24 ? 57 48 81 EC ? ? ? ? 44 8A 81 ? ? ? ? 48 8B DA 48 8B F9 48 8B D1 48 8B CB E8 ? ? ? ? 84 C0 74 64 48 8D 4C 24 ? 33 D2 41 B8")
 		.as<bool(*)(void*, const char*)>();
 
 	return func(this, mountPoint);
@@ -12,7 +13,8 @@ bool rage::fiDevice::Mount(const char* mountPoint)
 void rage::fiDevice::SetPath(const char* path, bool allowRoot, rage::fiDevice* parent)
 {
 	logger::write("device", "[%s] %s", __FUNCTION__, path);
-	static auto func = memory::scan("48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 83 64 24 ? ? 49 8B F9")
+	static auto func = memory::scan(IsEnhanced() ? "56 57 53 48 81 ec ? ? ? ? 4c 89 cf 44 89 c3" :
+		"48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 83 64 24 ? ? 49 8B F9")
 		.as<void(*)(void*, const char*, bool, rage::fiDevice*)>();
 
 	func(this, path, allowRoot, parent);
@@ -20,7 +22,8 @@ void rage::fiDevice::SetPath(const char* path, bool allowRoot, rage::fiDevice* p
 
 rage::fiDeviceRelative::fiDeviceRelative()
 {
-	static auto relativeDeviceVMT = memory::scan("48 8D 05 ? ? ? ? 48 89 03 EB ? 33 DB 48 8D 15 ? ? ? ? 45 33 C9").add(3).rip().as<void*>();
+	static auto relativeDeviceVMT = memory::scan(IsEnhanced() ? "48 8d 05 ? ? ? ? 48 89 06 48 c7 46 ? ? ? ? ? 48 8d 15" : 
+		"48 8D 05 ? ? ? ? 48 89 03 EB ? 33 DB 48 8D 15 ? ? ? ? 45 33 C9").add(3).rip().as<void*>();
 	VMT = relativeDeviceVMT;
 	pad[0xF8] = 0;
 }

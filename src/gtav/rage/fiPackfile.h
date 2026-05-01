@@ -3,6 +3,7 @@
 
 namespace rage
 {
+	// fields are offset by an extra 0x8 in enhanced, but we will adjust the pointer at runtime
 	class fiPackfile : public fiDevice
 	{
 	public:

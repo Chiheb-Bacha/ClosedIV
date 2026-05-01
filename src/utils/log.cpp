@@ -1,4 +1,7 @@
 #include "main.h"
+#include <iomanip>
+#include <sstream>
+#include <string>
 
 void logger::init()
 {
@@ -29,4 +32,22 @@ void logger::write(const char* type, const char* msg, ...)
 		logFile.flush();
 		logFile.close();
 	}
+}
+
+// Just used them to see if MPDLCMAPHooks patches were written correctly
+void logger::log_bytes(uint8_t* address, int n, bool spaced) {
+	auto buf = hexStr(address, n, spaced);
+	write("info", buf.c_str());
+}
+
+
+std::string logger::hexStr(const uint8_t* data, int len, bool spaced)
+{
+	std::stringstream ss;
+	ss << std::hex;
+
+	for (int i(0); i < len; ++i)
+		ss << std::setw(2) << std::setfill('0') << (int)data[i] << (spaced ? " " : "");
+
+	return ss.str();
 }
