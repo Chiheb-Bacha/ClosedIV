@@ -73,6 +73,8 @@ static memory::InitFuncs PackfileEncryptionHooks([] {
 		mem = memory::scan("e8 ? ? ? ? 48 8b 46 ? 66 c7 00 00 ? eb"); // 
 		DecryptHeader2Orig = mem.add(1).rip().as<decltype(DecryptHeader2Orig)>();
 		mem.set_call(DecryptHeader2Hook);
+		mem = memory::scan("e8 ? ? ? ? 48 8b 46 ? 8b 4c 24 ? 48 8d 14 08");
+		mem.set_call(DecryptHeader2Hook);
 
 		mem = memory::scan("c6 86 ? ? ? ? ? 48 89 f1 4c 89 fa 45 89 f0 45 31 c9").add(19);
 		ParseHeaderOrig = mem.add(1).rip().as<decltype(ParseHeaderOrig)>();
