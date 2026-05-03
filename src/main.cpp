@@ -1,8 +1,7 @@
 #include "main.h"
 
 static bool bInited = false;
-void (*origGetSystemTimeAsFileTime)(LPFILETIME lpSystemTimeAsFileTime);
-DWORD APIENTRY HookGetSystemTimeAsFileTime(LPVOID/*LPFILETIME lpSystemTimeAsFileTime*/)
+DWORD APIENTRY Init(LPVOID)
 {
 	if (!bInited)
 	{
@@ -37,9 +36,9 @@ DWORD APIENTRY HookGetSystemTimeAsFileTime(LPVOID/*LPFILETIME lpSystemTimeAsFile
 
 		memory::InitFuncs::run();
 
-		logger::write("info", "ClosedIV Inited!");
+		logger::write("info", "RageOpenV Inited!");
 	}
-	//GetSystemTimeAsFileTime(lpSystemTimeAsFileTime);
+	return TRUE;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
@@ -62,13 +61,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 			freopen_s(&unused, "CONOUT$", "w", stderr);
 		}
 
-		// Hook IAT fails for some reason. Just create a thread and hook.
-
-		//compatibility for any asi loader, as OpenIV supports only the one made by Alexander Blade
-	/*	if (!memory::HookIAT("kernel32.dll", "GetSystemTimeAsFileTime", (PVOID)HookGetSystemTimeAsFileTime, (PVOID*)&origGetSystemTimeAsFileTime)) {
-			logger::write("info", "Hooking failed error (%ld)", GetLastError());
-		}*/
-		CreateThread(nullptr, 0, HookGetSystemTimeAsFileTime, nullptr, 0, nullptr);
+		CreateThread(nullptr, 0, Init, nullptr, 0, nullptr);
 		
 	}
 	return TRUE;
