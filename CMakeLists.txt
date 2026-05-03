@@ -46,7 +46,7 @@ set_target_properties( minhook
     LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/LIB"
 )
 
-set(CMAKE_CONFIGURATION_TYPES Debug Release)
+set(CMAKE_CONFIGURATION_TYPES Debug Release RelWithDebInfo)
 if(ENABLE_LOGS)
     target_compile_definitions(RageOpenV PRIVATE _LOG)
 endif()
