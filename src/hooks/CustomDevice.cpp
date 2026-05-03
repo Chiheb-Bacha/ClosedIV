@@ -36,13 +36,13 @@ void InitialMountHook()
 	std::filesystem::path cwd = std::filesystem::current_path() / "newmods/";
 	cwd.make_preferred();
 
-	logger::write("device", "Mods path: %s", cwd.string().c_str());
+	logger::write("device", "[%s] Mods path: %s", __FUNCTION__, cwd.string().c_str());
 
 	rage::fiDeviceLocal* rootDevice = new rage::fiDeviceLocal();
 	rootDevice->SetPath(cwd.string().c_str(), true, nullptr);
 
 	if (rootDevice->Mount("mods:/"))
-		logger::write("device", "Root device mounted!");
+		logger::write("device", "[%s] Root device mounted!", __FUNCTION__);
 
 	platformDevice = new rage::fiDeviceLocal();
 	platformDeviceCRC = new rage::fiDeviceLocal();
@@ -77,14 +77,13 @@ char OpenArchiveHook(rage::fiPackfile* a1, const char* path, char smth, int32_t 
 	{
 		if (device->GetAttributes(path) & FILE_ATTRIBUTE_DIRECTORY)
 		{
-			logger::write("device", "Archive %s is a directory!", path);
+			logger::write("device", "[%s] Archive %s is a directory!", __FUNCTION__, path);
 			type = 2;
 		}
-		logger::write("device", "Opening archive %s %d %d", path, smth, type);
 	}
-	else {
-		logger::write("device", "Opening vanilla archive %s %d %d", path, smth, type);
-	}
+
+	logger::write("device", "[%s] Opening archive %s %d %d", __FUNCTION__, path, smth, type);
+
 	return OpenArchiveOrig(a1, path, smth, type, a5);
 }
 

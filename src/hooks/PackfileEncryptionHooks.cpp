@@ -1,5 +1,7 @@
 #include "main.h"
 
+static const int OPEN = 0x4E45504F;
+
 uint32_t currentEncryption;
 bool FindEncryptionHook(uint32_t encryption)
 {
@@ -10,9 +12,9 @@ bool FindEncryptionHook(uint32_t encryption)
 void(*DecryptHeaderOrig)(uint32_t, char*, int);
 void DecryptHeaderHook(uint32_t salt, char* entryTable, int size)
 {
-	if (currentEncryption == 0x4E45504F) //OPEN
+	if (currentEncryption == OPEN) //OPEN
 	{
-		logger::write("mods", "not encrypted RPF found");
+		logger::write("mods", "[%s] not encrypted RPF found", __FUNCTION__);
 		return;
 	}
 	logger::write("mods", "[%s] called", __FUNCTION__);
@@ -22,9 +24,9 @@ void DecryptHeaderHook(uint32_t salt, char* entryTable, int size)
 void(*DecryptHeader2Orig)(uint32_t, uint32_t, char*, int);
 void DecryptHeader2Hook(uint32_t encryption, uint32_t salt, char* header, int nameTableLen)
 {
-	if (encryption == 0x4E45504F) //OPEN
+	if (encryption == OPEN) //OPEN
 	{
-		logger::write("mods", "not encrypted RPF found");
+		logger::write("mods", "[%s] not encrypted RPF found", __FUNCTION__);
 		return;
 	}
 	logger::write("mods", "[%s] called", __FUNCTION__);
@@ -34,8 +36,6 @@ void DecryptHeader2Hook(uint32_t encryption, uint32_t salt, char* header, int na
 bool(*ParseHeaderOrig)(rage::fiPackfile*, const char*, bool, void*);
 bool ParseHeaderHook(rage::fiPackfile* a1, const char* name, bool readHeader, void* customHeader)
 {
-	//logger::write("rpf", "Parsing header for %s", name);
-
 	bool ret = ParseHeaderOrig(a1, name, readHeader, customHeader);
 	logger::write("mods", "[%s] parsed header /%s", __FUNCTION__, name);
 	if (ret)
@@ -50,12 +50,12 @@ bool ParseHeaderHook(rage::fiPackfile* a1, const char* name, bool readHeader, vo
 			Entry* v21 = (Entry*)(a1->entryTable + 16 * i);
 			if (v21->IsBinary() && v21->bin.nameOffset > 0 && v21->bin.isEncrypted)
 			{
-				if (currentEncryption == 0x4E45504F) //OPEN
+				if (currentEncryption == OPEN) //OPEN
 					v21->bin.isEncrypted = 0xFEFFFFF;
 			}
 		}
 
-		if (currentEncryption == 0x4E45504F) //OPEN
+		if (currentEncryption == OPEN) //OPEN
 			a1->currentFileOffset = 0xFEFFFFF;
 	}
 	return ret;
