@@ -12,14 +12,13 @@ public:
 
 	static void load()
 	{
-		if (std::filesystem::exists("ClosedIV.cfg"))
+		if (std::filesystem::exists("RageOpenV.cfg"))
 		{
-			get_ini().load("ClosedIV.cfg");
+			get_ini().load("RageOpenV.cfg");
 		}
 		else
 		{	//defaults
 			get_ini()["config"]["console"] = false;
-			get_ini()["config"]["dlcmaps"] = false;
 			get_ini()["log"]["info"] = true;
 			get_ini()["log"]["mods"] = false;
 			get_ini()["log"]["rpf"] = false;
@@ -30,7 +29,7 @@ public:
 
 	static void save()
 	{
-		get_ini().save("ClosedIV.cfg");
+		get_ini().save("RageOpenV.cfg");
 	}
 
 	template<typename T>

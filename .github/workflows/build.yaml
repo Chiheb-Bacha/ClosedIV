@@ -38,12 +38,12 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
 
-      - name: Upload ClosedIV.asi
+      - name: Upload RageOpenV.asi
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: BUILD/BIN/Release/ClosedIV.asi
-          asset_name: ClosedIV.asi
+          asset_path: BUILD/BIN/Release/RageOpenV.asi
+          asset_name: RageOpenV.asi
           asset_content_type: application/octet-stream

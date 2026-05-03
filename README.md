@@ -1,13 +1,14 @@
-# ClosedIV
+# RageOpenV
 
-- This repository contains the source code for ClosedIV.asi, an open source alternative to OpenIV.asi for GTA5.
-- It simply adds support for versions >3351.
-- No future additions or enhancements are planned.
+- This repository contains the source code for RageOpenV.asi, an open source alternative to OpenIV.asi for GTA5 Legacy, and OpenRPF.asi for GTA5 Enhanced.
+- Initially developed by martonp96
+- Updated to suppot GTA5 Legacy and Enhanced with the same binary by Chiheb-Bacha.
 
 ## Benefits over OpenIV.asi
 
 - open source
 - supports all features of OpenIV.asi
+- Uses a hashmap as a cache for rpf path lookups, which makes it faster
 - supports multiple different versions of ASI Loaders (Recommended: https://github.com/ThirteenAG/Ultimate-ASI-Loader)
 - adds a new way to load mods (see Info section)
 
@@ -17,11 +18,10 @@ CMake 3.17.x and Visual Studio is needed to build the project. You can run relea
 
 ## How to install
 
-- Install the recommended ASI loader or the one made by Alexander Blade.
+- Install an ASI loader.
 - Download the latest asi from releases
-- Delete OpenIV.asi if you have it
+- Delete OpenIV.asi or OpenRPF.asi if you have it
 - Place your mods in your mods folder or if you already had some, keep them there
-- Ready to play
 
 ## Info
 

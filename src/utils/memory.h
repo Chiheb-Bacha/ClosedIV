@@ -66,7 +66,7 @@ public:
 
 		auto status = MH_Initialize();
 		if (status != MH_OK)
-			logger::write("info", "Mh init failed %d", (int)status);
+			logger::write("info", "MH init failed %d", (int)status);
 	}
 
 	template <typename T>

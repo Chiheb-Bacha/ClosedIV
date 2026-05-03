@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(closediv)
+project(RageOpenV)
 
 file(GLOB_RECURSE PROJECT_SOURCE_FILES "src/*.h" "src/*.cpp")
 
@@ -21,15 +21,15 @@ GroupSources(${CMAKE_SOURCE_DIR}/src "Source Files")
 
 add_subdirectory("src/vendor/minhook")
 
-add_library(closediv SHARED ${PROJECT_SOURCE_FILES})
-add_dependencies(closediv minhook)
+add_library(RageOpenV SHARED ${PROJECT_SOURCE_FILES})
+add_dependencies(RageOpenV minhook)
 
 include_directories(
     ./src
 )
 
-set_target_properties(closediv PROPERTIES
-    OUTPUT_NAME "ClosedIV"
+set_target_properties(RageOpenV PROPERTIES
+    OUTPUT_NAME "RageOpenV"
     SUFFIX ".asi"
     CXX_STANDARD 20
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/BIN/"
@@ -48,5 +48,5 @@ set_target_properties( minhook
 
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
-target_link_directories(closediv PUBLIC "${CMAKE_BINARY_DIR}/LIB")
-target_link_libraries(closediv version.lib debug minhook.x64d.lib optimized minhook.x64.lib)
+target_link_directories(RageOpenV PUBLIC "${CMAKE_BINARY_DIR}/LIB")
+target_link_libraries(RageOpenV version.lib debug minhook.x64d.lib optimized minhook.x64.lib)
