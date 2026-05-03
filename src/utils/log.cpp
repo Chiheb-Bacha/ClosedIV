@@ -30,6 +30,8 @@ void logger::vwrite(const char* type, const char* msg, va_list args)
 
     vsnprintf(buffer + offset, sizeof(buffer) - offset, msg, args);
 
+    printf("%s\n", buffer);
+
     if (config::get_log(type))
     {
         std::ofstream logFile("RageOpenV.log", std::ofstream::out | std::ofstream::app);

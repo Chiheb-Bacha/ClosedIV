@@ -41,6 +41,13 @@ DWORD APIENTRY Init(LPVOID)
 	return TRUE;
 }
 
+void (*origGetSystemTimeAsFileTime)(LPFILETIME lpSystemTimeAsFileTime);
+void HookGetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
+{
+	Init(NULL);
+	GetSystemTimeAsFileTime(lpSystemTimeAsFileTime);
+}
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 {
 	if (dwReason == DLL_PROCESS_ATTACH)
@@ -60,9 +67,15 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 			freopen_s(&unused, "CONOUT$", "w", stdout);
 			freopen_s(&unused, "CONOUT$", "w", stderr);
 		}
-
-		CreateThread(nullptr, 0, Init, nullptr, 0, nullptr);
-		
+		if (IsEnhanced()) {
+			CreateThread(nullptr, 0, Init, nullptr, 0, nullptr);
+		}
+		else {
+			// compatibility for any asi loader, as OpenIV supports only the one made by Alexander Blade
+			if (!memory::HookIAT("kernel32.dll", "GetSystemTimeAsFileTime", (PVOID)HookGetSystemTimeAsFileTime, (PVOID*)&origGetSystemTimeAsFileTime)) {
+				logger::write("info", "Hooking failed error (%ld)", GetLastError());
+			}
+		}
 	}
 	return TRUE;
 }
