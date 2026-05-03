@@ -37,6 +37,7 @@ void logger::vwrite(const char* type, const char* msg, va_list args)
     }
 }
 
+// This function will log things that happen rarely
 void logger::write(const char* type, const char* msg, ...)
 {
     va_list args;
@@ -45,9 +46,10 @@ void logger::write(const char* type, const char* msg, ...)
     va_end(args);
 }
 
+// If targeting ReleaseWithLogs, this function will log inside hooks that are on hot paths
 void logger::log(const char* type, const char* msg, ...)
 {
-#ifdef _DEBUG
+#ifdef _LOG
     va_list args;
     va_start(args, msg);
     vwrite(type, msg, args);

@@ -39,12 +39,12 @@ static bool TryModsPath(const char* path, std::string& outModsPath)
 
 static HANDLE OpenBulkImpl(void* device, const char* path, __int64* a3, OpenBulkFn orig)
 {
-    logger::write("info", "[%s] Called with path /%s", __FUNCTION__, path);
+    logger::log("info", "[%s] Called with path /%s", __FUNCTION__, path);
 
     std::string modsPath;
     if (path && TryModsPath(path, modsPath))
     {
-        logger::write("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
+        logger::log("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
         HANDLE result = orig(device, modsPath.c_str(), a3);
         if (result && result != INVALID_HANDLE_VALUE)
             return result;
@@ -54,12 +54,12 @@ static HANDLE OpenBulkImpl(void* device, const char* path, __int64* a3, OpenBulk
 
 static FILETIME GetFileTimeImpl(void* device, const char* path, GetFileTimeFn orig)
 {
-    logger::write("info", "[%s] Called with path /%s", __FUNCTION__, path);
+    logger::log("info", "[%s] Called with path /%s", __FUNCTION__, path);
 
     std::string modsPath;
     if (path && TryModsPath(path, modsPath))
     {
-        logger::write("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
+        logger::log("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
         return orig(device, modsPath.c_str());
     }
     return orig(device, path);
@@ -67,12 +67,12 @@ static FILETIME GetFileTimeImpl(void* device, const char* path, GetFileTimeFn or
 
 static uint64_t GetFileSizeImpl(void* device, const char* path, GetFileSizeFn orig)
 {
-    logger::write("info", "[%s] Called with path /%s", __FUNCTION__, path);
+    logger::log("info", "[%s] Called with path /%s", __FUNCTION__, path);
 
     std::string modsPath;
     if (path && TryModsPath(path, modsPath))
     {
-        logger::write("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
+        logger::log("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
         return orig(device, modsPath.c_str());
     }
     return orig(device, path);
@@ -80,12 +80,12 @@ static uint64_t GetFileSizeImpl(void* device, const char* path, GetFileSizeFn or
 
 static uint64_t GetAttribsImpl(void* device, const char* path, GetAttrsFn orig)
 {
-    logger::write("info", "[%s] Called with path /%s", __FUNCTION__, path);
+    logger::log("info", "[%s] Called with path /%s", __FUNCTION__, path);
 
     std::string modsPath;
     if (path && TryModsPath(path, modsPath))
     {
-        logger::write("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
+        logger::log("mods", "[%s] Redirecting to /%s", __FUNCTION__, modsPath.c_str());
         return orig(device, modsPath.c_str());
     }
     return orig(device, path);

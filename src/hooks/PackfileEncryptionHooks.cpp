@@ -12,24 +12,24 @@ bool FindEncryptionHook(uint32_t encryption)
 void(*DecryptHeaderOrig)(uint32_t, char*, int);
 void DecryptHeaderHook(uint32_t salt, char* entryTable, int size)
 {
-	if (currentEncryption == OPEN) //OPEN
+	if (currentEncryption == OPEN)
 	{
-		logger::write("mods", "[%s] not encrypted RPF found", __FUNCTION__);
+		logger::log("mods", "[%s] not encrypted RPF found", __FUNCTION__);
 		return;
 	}
-	logger::write("mods", "[%s] called", __FUNCTION__);
+	logger::log("mods", "[%s] called", __FUNCTION__);
 	DecryptHeaderOrig(salt, entryTable, size);
 }
 
 void(*DecryptHeader2Orig)(uint32_t, uint32_t, char*, int);
 void DecryptHeader2Hook(uint32_t encryption, uint32_t salt, char* header, int nameTableLen)
 {
-	if (encryption == OPEN) //OPEN
+	if (encryption == OPEN)
 	{
-		logger::write("mods", "[%s] not encrypted RPF found", __FUNCTION__);
+		logger::log("mods", "[%s] not encrypted RPF found", __FUNCTION__);
 		return;
 	}
-	logger::write("mods", "[%s] called", __FUNCTION__);
+	logger::log("mods", "[%s] called", __FUNCTION__);
 	DecryptHeader2Orig(encryption, salt, header, nameTableLen);
 }
 
@@ -37,32 +37,32 @@ bool(*ParseHeaderOrig)(rage::fiPackfile*, const char*, bool, void*);
 bool ParseHeaderHook(rage::fiPackfile* a1, const char* name, bool readHeader, void* customHeader)
 {
 	bool ret = ParseHeaderOrig(a1, name, readHeader, customHeader);
-	logger::write("mods", "[%s] parsed header /%s", __FUNCTION__, name);
+	logger::log("mods", "[%s] parsed header /%s", __FUNCTION__, name);
 	if (ret)
 	{
 		if (IsEnhanced()) {
 			// fiPackfile on Enhanced is shifted by 0x08
 			a1 = reinterpret_cast<rage::fiPackfile*>(reinterpret_cast<uintptr_t>(a1) + 0x8);
 		}
-		logger::write("mods", "[%s] fileCount /%d", __FUNCTION__, a1->filesCount);
+		logger::log("mods", "[%s] fileCount /%d", __FUNCTION__, a1->filesCount);
 		for (int i = 0; i < a1->filesCount; ++i)
 		{
 			Entry* v21 = (Entry*)(a1->entryTable + 16 * i);
 			if (v21->IsBinary() && v21->bin.nameOffset > 0 && v21->bin.isEncrypted)
 			{
-				if (currentEncryption == OPEN) //OPEN
+				if (currentEncryption == OPEN)
 					v21->bin.isEncrypted = 0xFEFFFFF;
 			}
 		}
 
-		if (currentEncryption == OPEN) //OPEN
+		if (currentEncryption == OPEN)
 			a1->currentFileOffset = 0xFEFFFFF;
 	}
 	return ret;
 }
 
 static memory::InitFuncs PackfileEncryptionHooks([] {
-	//allow unencrypted RPFs
+	// Allow unencrypted RPFs
 	if (IsEnhanced()) {
 		memory::scan("e8 ? ? ? ? 80 7c 24 2e ? 74 ? 48 8b 56").set_call(FindEncryptionHook);
 

@@ -47,6 +47,9 @@ set_target_properties( minhook
 )
 
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
+if(ENABLE_LOGS)
+    target_compile_definitions(RageOpenV PRIVATE _LOG)
+endif()
 
 target_link_directories(RageOpenV PUBLIC "${CMAKE_BINARY_DIR}/LIB")
 target_link_libraries(RageOpenV version.lib debug minhook.x64d.lib optimized minhook.x64.lib)
