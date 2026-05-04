@@ -26,3 +26,7 @@ CMake 3.17.x and Visual Studio is needed to build the project. You can run relea
 ## Info
 
 Check the [wiki](https://github.com/martonp96/ClosedIV/wiki) for more information
+
+## Contact
+
+Have any questions, suggestions, or would like to be up-to-date on my latest projects? Then join my [Discord](https://discord.gg/VMvvuFxArY)!
