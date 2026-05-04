@@ -1,12 +1,12 @@
 #include "main.h"
 
 static bool bInited = false;
-DWORD APIENTRY Init(LPVOID)
+void (*origGetSystemTimeAsFileTime)(LPFILETIME lpSystemTimeAsFileTime);
+void HookGetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
 {
 	if (!bInited)
 	{
 		bInited = true;
-		memory::init();
 
 		// Don't hide the console
 		if (IsEnhanced()) {
@@ -36,16 +36,9 @@ DWORD APIENTRY Init(LPVOID)
 
 		memory::InitFuncs::run();
 
-		logger::write("info", "RageOpenV Inited!");
+		logger::write("info", " RageOpenV Inited!");
 	}
-	return TRUE;
-}
-
-void (*origGetSystemTimeAsFileTime)(LPFILETIME lpSystemTimeAsFileTime);
-void HookGetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
-{
-	Init(NULL);
-	GetSystemTimeAsFileTime(lpSystemTimeAsFileTime);
+	origGetSystemTimeAsFileTime(lpSystemTimeAsFileTime);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
@@ -58,6 +51,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 
 		logger::init();
 
+		memory::init();
+
 		if (config::get_config<bool>("console"))
 		{
 			AllocConsole();
@@ -67,14 +62,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  dwReason, LPVOID lpReserved)
 			freopen_s(&unused, "CONOUT$", "w", stdout);
 			freopen_s(&unused, "CONOUT$", "w", stderr);
 		}
-		if (IsEnhanced()) {
-			CreateThread(nullptr, 0, Init, nullptr, 0, nullptr);
-		}
-		else {
-			// compatibility for any asi loader, as OpenIV supports only the one made by Alexander Blade
-			if (!memory::HookIAT("kernel32.dll", "GetSystemTimeAsFileTime", (PVOID)HookGetSystemTimeAsFileTime, (PVOID*)&origGetSystemTimeAsFileTime)) {
-				logger::write("info", "Hooking failed error (%ld)", GetLastError());
-			}
+
+		// NOTE: using a thread on legacy doesn't work consistently. Sometimes some hooks are executed before init is finished.
+		// Calling HookGetSystemTimeAsFileTime directly inside DllMain doesn't work (loader lock shenanigans)
+		// memory::IAT doesn't work on Enhanced since imports are obfuscated
+		if (!memory::HookApi(L"kernel32.dll", "GetSystemTimeAsFileTime", (PVOID)HookGetSystemTimeAsFileTime, (PVOID*)&origGetSystemTimeAsFileTime)) {
+			logger::write("info", "Hooking failed error (%ld)", GetLastError());
 		}
 	}
 	return TRUE;

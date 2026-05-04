@@ -66,7 +66,7 @@ public:
 
 		auto status = MH_Initialize();
 		if (status != MH_OK)
-			logger::write("info", "MH init failed %d", (int)status);
+			logger::write("info", "MH_Initialize failed %d", (int)status);
 	}
 
 	template <typename T>
@@ -238,6 +238,21 @@ public:
 		return FALSE;
 	}
 
+	static bool HookApi(const wchar_t* module, const char* funcName, PVOID pNewFunc, PVOID* pOldFunc)
+	{
+		auto status = MH_CreateHookApi(module, funcName, pNewFunc, pOldFunc);
+		if (status != MH_OK) {
+			logger::write("info", " HookApi failed for %s: %d", funcName, (int)status);
+			return false;
+		}
+		status = MH_EnableHook(MH_ALL_HOOKS);
+		if (status != MH_OK) {
+			logger::write("info", " MH_EnableHook failed: %d", (int)status);
+			return false;
+		}
+		return true;
+	}
+
 	static memory scan(const char* signature, bool ignoreFail = false)
 	{
 		static auto pattern_to_byte = [](const char* pattern) {
@@ -288,7 +303,7 @@ public:
 			}
 		}
 		if (!ignoreFail) {
-			logger::write("info", "!! Pattern %s not found!", signature);
+			logger::write("info", " !! Pattern %s not found!", signature);
 		}
 		return memory(0, false);
 	}
