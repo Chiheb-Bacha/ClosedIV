@@ -1,7 +1,7 @@
 # RageOpenV
 
 - This repository contains the source code for RageOpenV.asi, an open source alternative to OpenIV.asi for GTA5 Legacy, and OpenRPF.asi for GTA5 Enhanced.
-- Initially developed by martonp96
+- Initially developed by martonp96 as ClosedIV
 - Updated to suppot GTA5 Legacy and Enhanced with the same binary by Chiheb-Bacha.
 
 ## Benefits over OpenIV.asi
