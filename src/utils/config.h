@@ -12,14 +12,14 @@ public:
 
 	static void load()
 	{
-		if (std::filesystem::exists("RageOpenV.cfg"))
+		if (std::filesystem::exists("RageOpenV.ini"))
 		{
-			get_ini().load("RageOpenV.cfg");
+			get_ini().load("RageOpenV.ini");
 		}
 		else
 		{	//defaults
 			get_ini()["config"]["console"] = false;
-			get_ini()["log"]["info"] = true;
+			get_ini()["log"]["info"] = false;
 			get_ini()["log"]["mods"] = false;
 			get_ini()["log"]["rpf"] = false;
 			get_ini()["log"]["device"] = false;
@@ -29,7 +29,7 @@ public:
 
 	static void save()
 	{
-		get_ini().save("RageOpenV.cfg");
+		get_ini().save("RageOpenV.ini");
 	}
 
 	template<typename T>
