@@ -30,3 +30,7 @@ Check the [wiki](https://github.com/martonp96/ClosedIV/wiki) for more informatio
 ## Contact
 
 Have any questions, suggestions, or would like to be up-to-date on my latest projects? Then join my [Discord](https://discord.gg/VMvvuFxArY)!
+
+## LICENSE
+
+Please **DO NOT REDISTRIBUTE** built binaries, and instead link to the [official release](https://www.gta5-mods.com/scripts/rageopenv).
